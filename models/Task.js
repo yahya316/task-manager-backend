@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+﻿const mongoose = require('mongoose');
 
 const activityLogSchema = new mongoose.Schema(
   {
@@ -63,7 +63,6 @@ const taskSchema = new mongoose.Schema(
       enum: ['Pending', 'In Progress', 'Completed', 'Cancelled'],
       default: 'Pending',
     },
-<<<<<<< HEAD
     assignedTo: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -81,8 +80,6 @@ const taskSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

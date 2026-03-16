@@ -1,27 +1,21 @@
-const express = require('express');
+﻿const express = require('express');
 const { body, param, query, validationResult } = require('express-validator');
 const Task = require('../models/Task');
-<<<<<<< HEAD
 const User = require('../models/User');
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
 const { authMiddleware, roleMiddleware } = require('../middleware/auth');
 
 const router = express.Router();
 
-// GET /api/tasks — Get all tasks (with optional filters)
+// GET /api/tasks â€” Get all tasks (with optional filters)
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const { status, from, to } = req.query;
     const filter = {};
 
-<<<<<<< HEAD
     if (req.user.role === 'sales') {
       filter.assignedTo = req.user._id;
     }
 
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
     if (status && status !== 'All') {
       filter.status = status;
     }
@@ -34,10 +28,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
     const tasks = await Task.find(filter)
       .populate('createdBy', 'name email')
-<<<<<<< HEAD
       .populate('assignedTo', 'name email role isActive')
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
       .sort({ createdAt: -1 });
 
     res.json({
@@ -54,15 +45,12 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-// GET /api/tasks/:id — Get single task with full activity log
+// GET /api/tasks/:id â€” Get single task with full activity log
 router.get('/:id', authMiddleware, async (req, res) => {
   try {
     const task = await Task.findById(req.params.id)
       .populate('createdBy', 'name email')
-<<<<<<< HEAD
       .populate('assignedTo', 'name email role isActive')
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
       .populate('activityLog.changedBy', 'name email');
 
     if (!task) {
@@ -72,7 +60,6 @@ router.get('/:id', authMiddleware, async (req, res) => {
       });
     }
 
-<<<<<<< HEAD
     if (
       req.user.role === 'sales' &&
       task.assignedTo &&
@@ -84,8 +71,6 @@ router.get('/:id', authMiddleware, async (req, res) => {
       });
     }
 
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
     res.json({
       success: true,
       data: task,
@@ -100,7 +85,7 @@ router.get('/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// POST /api/tasks — Create task [Manager only]
+// POST /api/tasks â€” Create task [Manager only]
 router.post(
   '/',
   authMiddleware,
@@ -111,11 +96,8 @@ router.post(
     body('location').notEmpty().withMessage('Location is required'),
     body('contactName').notEmpty().withMessage('Contact name is required'),
     body('contactPhone').notEmpty().withMessage('Contact phone is required'),
-<<<<<<< HEAD
     body('assignedTo').isMongoId().withMessage('Valid assignee is required'),
     body('deadlineAt').isISO8601().withMessage('Valid deadline is required'),
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
   ],
   async (req, res) => {
     try {
@@ -127,7 +109,6 @@ router.post(
         });
       }
 
-<<<<<<< HEAD
       const {
         title,
         description,
@@ -150,9 +131,6 @@ router.post(
           message: 'Assignee must be an active sales user',
         });
       }
-=======
-      const { title, description, location, contactName, contactPhone } = req.body;
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
 
       const task = await Task.create({
         title,
@@ -161,13 +139,10 @@ router.post(
         contactName,
         contactPhone,
         status: 'Pending',
-<<<<<<< HEAD
         assignedTo,
         deadlineAt: new Date(deadlineAt),
         paymentReceived: null,
         paymentMarkedAt: null,
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
         createdBy: req.user._id,
         activityLog: [
           {
@@ -176,22 +151,14 @@ router.post(
             fromStatus: 'Created',
             toStatus: 'Pending',
             timestamp: new Date(),
-<<<<<<< HEAD
             note: `Task created and assigned to ${assignee.name}`,
-=======
-            note: 'Task created',
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
           },
         ],
       });
 
       const populatedTask = await Task.findById(task._id)
-<<<<<<< HEAD
         .populate('createdBy', 'name email')
         .populate('assignedTo', 'name email role isActive');
-=======
-        .populate('createdBy', 'name email');
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
 
       res.status(201).json({
         success: true,
@@ -208,7 +175,7 @@ router.post(
   }
 );
 
-// PUT /api/tasks/:id — Edit task details [Manager only]
+// PUT /api/tasks/:id â€” Edit task details [Manager only]
 router.put(
   '/:id',
   authMiddleware,
@@ -219,11 +186,8 @@ router.put(
     body('location').notEmpty().withMessage('Location is required'),
     body('contactName').notEmpty().withMessage('Contact name is required'),
     body('contactPhone').notEmpty().withMessage('Contact phone is required'),
-<<<<<<< HEAD
     body('assignedTo').isMongoId().withMessage('Valid assignee is required'),
     body('deadlineAt').isISO8601().withMessage('Valid deadline is required'),
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
   ],
   async (req, res) => {
     try {
@@ -243,7 +207,6 @@ router.put(
         });
       }
 
-<<<<<<< HEAD
       const {
         title,
         description,
@@ -266,30 +229,20 @@ router.put(
           message: 'Assignee must be an active sales user',
         });
       }
-=======
-      const { title, description, location, contactName, contactPhone } = req.body;
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
 
       task.title = title;
       task.description = description;
       task.location = location;
       task.contactName = contactName;
       task.contactPhone = contactPhone;
-<<<<<<< HEAD
       task.assignedTo = assignedTo;
       task.deadlineAt = new Date(deadlineAt);
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
 
       await task.save();
 
       const updatedTask = await Task.findById(task._id)
-<<<<<<< HEAD
         .populate('createdBy', 'name email')
         .populate('assignedTo', 'name email role isActive');
-=======
-        .populate('createdBy', 'name email');
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
 
       res.json({
         success: true,
@@ -306,7 +259,7 @@ router.put(
   }
 );
 
-// DELETE /api/tasks/:id — Delete task [Manager only]
+// DELETE /api/tasks/:id â€” Delete task [Manager only]
 router.delete(
   '/:id',
   authMiddleware,
@@ -338,7 +291,7 @@ router.delete(
   }
 );
 
-// PATCH /api/tasks/:id/status — Change task status [Sales or Manager]
+// PATCH /api/tasks/:id/status â€” Change task status [Sales or Manager]
 router.patch(
   '/:id/status',
   authMiddleware,
@@ -346,13 +299,10 @@ router.patch(
     body('newStatus')
       .isIn(['Pending', 'In Progress', 'Completed', 'Cancelled'])
       .withMessage('Invalid status value'),
-<<<<<<< HEAD
     body('paymentReceived')
       .optional()
       .custom((value) => typeof value === 'boolean')
       .withMessage('paymentReceived must be true or false'),
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
   ],
   async (req, res) => {
     try {
@@ -372,7 +322,6 @@ router.patch(
         });
       }
 
-<<<<<<< HEAD
       if (
         req.user.role === 'sales' &&
         task.assignedTo &&
@@ -385,9 +334,6 @@ router.patch(
       }
 
       const { newStatus, note, paymentReceived } = req.body;
-=======
-      const { newStatus, note } = req.body;
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
       const fromStatus = task.status;
 
       if (fromStatus === newStatus) {
@@ -397,7 +343,6 @@ router.patch(
         });
       }
 
-<<<<<<< HEAD
       if (newStatus === 'Completed' && typeof paymentReceived !== 'boolean') {
         return res.status(400).json({
           success: false,
@@ -414,16 +359,12 @@ router.patch(
         .filter((value) => value && value.trim().length > 0)
         .join(' | ');
 
-=======
-      // Add activity log entry
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
       task.activityLog.push({
         changedBy: req.user._id,
         changedByName: req.user.name,
         fromStatus,
         toStatus: newStatus,
         timestamp: new Date(),
-<<<<<<< HEAD
         note: combinedNote,
       });
 
@@ -432,20 +373,11 @@ router.patch(
         task.paymentReceived = paymentReceived;
         task.paymentMarkedAt = new Date();
       }
-=======
-        note: note || '',
-      });
-
-      task.status = newStatus;
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
       await task.save();
 
       const updatedTask = await Task.findById(task._id)
         .populate('createdBy', 'name email')
-<<<<<<< HEAD
         .populate('assignedTo', 'name email role isActive')
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
         .populate('activityLog.changedBy', 'name email');
 
       res.json({
@@ -463,8 +395,7 @@ router.patch(
   }
 );
 
-<<<<<<< HEAD
-// PATCH /api/tasks/:id/payment — Update payment status for completed task [Sales assignee or Manager]
+// PATCH /api/tasks/:id/payment â€” Update payment status for completed task [Sales assignee or Manager]
 router.patch(
   '/:id/payment',
   authMiddleware,
@@ -553,6 +484,4 @@ router.patch(
   }
 );
 
-=======
->>>>>>> 393f578061f2f0650f14ae885060a023ecb26c81
 module.exports = router;
